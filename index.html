@@ -1,0 +1,99 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Trình lưu link cá nhân</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f2f2f2;
+    }
+    h1 {
+      text-align: center;
+    }
+    input, button {
+      padding: 8px;
+      margin: 5px;
+    }
+    .link-list {
+      margin-top: 20px;
+    }
+    .link-item {
+      background: #fff;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-left: 4px solid #4CAF50;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .link-item a {
+      text-decoration: none;
+      color: #333;
+    }
+    .delete-btn {
+      background: red;
+      color: white;
+      border: none;
+      padding: 5px 8px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<h1>📌 Lưu trữ Link Cá Nhân</h1>
+
+<input id="linkName" type="text" placeholder="Tên hiển thị" />
+<input id="linkUrl" type="url" placeholder="https://example.com" />
+<button onclick="addLink()">Thêm Link</button>
+
+<div class="link-list" id="linkList"></div>
+
+<script>
+  const linkList = document.getElementById('linkList');
+
+  function loadLinks() {
+    const links = JSON.parse(localStorage.getItem('savedLinks') || '[]');
+    linkList.innerHTML = '';
+    links.forEach((link, index) => {
+      const item = document.createElement('div');
+      item.className = 'link-item';
+      item.innerHTML = `
+        <a href="${link.url}" target="_blank">${link.name}</a>
+        <button class="delete-btn" onclick="deleteLink(${index})">Xóa</button>
+      `;
+      linkList.appendChild(item);
+    });
+  }
+
+  function addLink() {
+    const name = document.getElementById('linkName').value.trim();
+    const url = document.getElementById('linkUrl').value.trim();
+    if (!name || !url) {
+      alert('Vui lòng nhập cả tên và đường dẫn.');
+      return;
+    }
+
+    const links = JSON.parse(localStorage.getItem('savedLinks') || '[]');
+    links.push({ name, url });
+    localStorage.setItem('savedLinks', JSON.stringify(links));
+    document.getElementById('linkName').value = '';
+    document.getElementById('linkUrl').value = '';
+    loadLinks();
+  }
+
+  function deleteLink(index) {
+    const links = JSON.parse(localStorage.getItem('savedLinks') || '[]');
+    links.splice(index, 1);
+    localStorage.setItem('savedLinks', JSON.stringify(links));
+    loadLinks();
+  }
+
+  loadLinks();
+</script>
+
+</body>
+</html>
