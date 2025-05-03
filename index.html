@@ -2,58 +2,128 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <title>Trình lưu link cá nhân</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>📚 Danh sách khóa học đã lưu</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
       padding: 20px;
-      background: #f2f2f2;
+      background-color: #f8f9fa;
+      color: #333;
     }
+
     h1 {
       text-align: center;
+      color: #1d3557;
     }
-    input, button {
-      padding: 8px;
-      margin: 5px;
+
+    .alert {
+      background-color: #d1fae5;
+      color: #065f46;
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin: 20px auto;
+      width: fit-content;
+      display: none;
     }
-    .link-list {
-      margin-top: 20px;
+
+    .form-group {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin: 20px 0;
     }
-    .link-item {
-      background: #fff;
+
+    input[type="text"], input[type="url"] {
       padding: 10px;
-      margin-bottom: 10px;
-      border-left: 4px solid #4CAF50;
+      font-size: 14px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      width: 260px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #1d3557;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.2s ease;
+    }
+
+    button:hover {
+      background-color: #457b9d;
+    }
+
+    .link-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 20px;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .link-item {
+      background: white;
+      border-left: 6px solid #2a9d8f;
+      padding: 16px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
+
     .link-item a {
+      font-weight: bold;
       text-decoration: none;
-      color: #333;
+      color: #1d3557;
     }
+
     .delete-btn {
-      background: red;
+      background-color: #e63946;
       color: white;
       border: none;
-      padding: 5px 8px;
+      padding: 8px 12px;
+      border-radius: 6px;
       cursor: pointer;
+      font-size: 13px;
+    }
+
+    .delete-btn:hover {
+      background-color: #c9182b;
     }
   </style>
 </head>
 <body>
 
-<h1>📌 Lưu trữ Link Cá Nhân</h1>
+<h1>📌 Danh sách khóa học đã lưu</h1>
 
-<input id="linkName" type="text" placeholder="Tên hiển thị" />
-<input id="linkUrl" type="url" placeholder="https://example.com" />
-<button onclick="addLink()">Thêm Link</button>
+<div id="alert" class="alert"></div>
+
+<div class="form-group">
+  <input id="linkName" type="text" placeholder="Tên khóa học" />
+  <input id="linkUrl" type="url" placeholder="https://link-khoa-hoc.com" />
+  <button onclick="addLink()">Thêm thủ công</button>
+</div>
 
 <div class="link-list" id="linkList"></div>
 
 <script>
   const linkList = document.getElementById('linkList');
+  const alertBox = document.getElementById('alert');
+
+  function showAlert(message) {
+    alertBox.textContent = message;
+    alertBox.style.display = 'block';
+    setTimeout(() => alertBox.style.display = 'none', 3000);
+  }
 
   function loadLinks() {
     const links = JSON.parse(localStorage.getItem('savedLinks') || '[]');
@@ -61,28 +131,35 @@
     links.forEach((link, index) => {
       const item = document.createElement('div');
       item.className = 'link-item';
-      item.innerHTML = `
-        <a href="${link.url}" target="_blank">${link.name}</a>
-        <button class="delete-btn" onclick="deleteLink(${index})">Xóa</button>
-      `;
+      item.innerHTML = \`
+        <a href="\${link.url}" target="_blank">\${link.name}</a>
+        <button class="delete-btn" onclick="deleteLink(\${index})">Xóa</button>
+      \`;
       linkList.appendChild(item);
     });
   }
 
-  function addLink() {
-    const name = document.getElementById('linkName').value.trim();
-    const url = document.getElementById('linkUrl').value.trim();
+  function addLink(name = null, url = null) {
+    name = name || document.getElementById('linkName').value.trim();
+    url = url || document.getElementById('linkUrl').value.trim();
     if (!name || !url) {
-      alert('Vui lòng nhập cả tên và đường dẫn.');
+      alert('Vui lòng nhập đầy đủ tên và link.');
       return;
     }
 
     const links = JSON.parse(localStorage.getItem('savedLinks') || '[]');
+    const exists = links.some(link => link.url === url);
+    if (exists) {
+      showAlert('🔁 Khóa học này đã được lưu rồi.');
+      return;
+    }
+
     links.push({ name, url });
     localStorage.setItem('savedLinks', JSON.stringify(links));
     document.getElementById('linkName').value = '';
     document.getElementById('linkUrl').value = '';
     loadLinks();
+    showAlert('✔ Đã lưu khóa học: ' + name);
   }
 
   function deleteLink(index) {
@@ -92,7 +169,20 @@
     loadLinks();
   }
 
-  loadLinks();
+  function getQueryParam(param) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param);
+  }
+
+  // Tự động thêm nếu có ?name=...&url=...
+  window.addEventListener('DOMContentLoaded', () => {
+    const name = getQueryParam('name');
+    const url = getQueryParam('url');
+    if (name && url) {
+      addLink(decodeURIComponent(name), decodeURIComponent(url));
+    }
+    loadLinks();
+  });
 </script>
 
 </body>
