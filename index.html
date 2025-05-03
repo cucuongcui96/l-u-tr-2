@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -40,11 +39,21 @@
       padding: 5px 8px;
       cursor: pointer;
     }
+    .alert {
+      background: #dff0d8;
+      color: #3c763d;
+      padding: 10px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+      display: none;
+    }
   </style>
 </head>
 <body>
 
 <h1>📌 Lưu trữ Link Cá Nhân</h1>
+
+<div id="alert" class="alert"></div>
 
 <input id="linkName" type="text" placeholder="Tên hiển thị" />
 <input id="linkUrl" type="url" placeholder="https://example.com" />
@@ -54,6 +63,13 @@
 
 <script>
   const linkList = document.getElementById('linkList');
+  const alertBox = document.getElementById('alert');
+
+  function showAlert(message) {
+    alertBox.textContent = message;
+    alertBox.style.display = 'block';
+    setTimeout(() => alertBox.style.display = 'none', 3000);
+  }
 
   function loadLinks() {
     const links = JSON.parse(localStorage.getItem('savedLinks') || '[]');
@@ -69,20 +85,28 @@
     });
   }
 
-  function addLink() {
-    const name = document.getElementById('linkName').value.trim();
-    const url = document.getElementById('linkUrl').value.trim();
+  function addLink(name = null, url = null) {
+    name = name || document.getElementById('linkName').value.trim();
+    url = url || document.getElementById('linkUrl').value.trim();
+
     if (!name || !url) {
       alert('Vui lòng nhập cả tên và đường dẫn.');
       return;
     }
 
     const links = JSON.parse(localStorage.getItem('savedLinks') || '[]');
+    const exists = links.some(link => link.url === url);
+    if (exists) {
+      showAlert('🔁 Link này đã tồn tại.');
+      return;
+    }
+
     links.push({ name, url });
     localStorage.setItem('savedLinks', JSON.stringify(links));
     document.getElementById('linkName').value = '';
     document.getElementById('linkUrl').value = '';
     loadLinks();
+    showAlert('✔ Đã lưu khóa học: ' + name);
   }
 
   function deleteLink(index) {
@@ -92,7 +116,20 @@
     loadLinks();
   }
 
-  loadLinks();
+  function getQueryParam(param) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param);
+  }
+
+  // Tự động thêm link nếu có ?name=...&url=...
+  window.addEventListener('DOMContentLoaded', () => {
+    const name = getQueryParam('name');
+    const url = getQueryParam('url');
+    if (name && url) {
+      addLink(decodeURIComponent(name), decodeURIComponent(url));
+    }
+    loadLinks();
+  });
 </script>
 
 </body>
