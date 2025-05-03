@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -31,6 +30,7 @@
 
     .form-group {
       display: flex;
+      flex-wrap: wrap;
       gap: 10px;
       justify-content: center;
       margin: 20px 0;
@@ -131,10 +131,10 @@
     links.forEach((link, index) => {
       const item = document.createElement('div');
       item.className = 'link-item';
-      item.innerHTML = \`
-        <a href="\${link.url}" target="_blank">\${link.name}</a>
-        <button class="delete-btn" onclick="deleteLink(\${index})">Xóa</button>
-      \`;
+      item.innerHTML = `
+        <a href="${link.url}" target="_blank">${link.name}</a>
+        <button class="delete-btn" onclick="deleteLink(${index})">Xóa</button>
+      `;
       linkList.appendChild(item);
     });
   }
