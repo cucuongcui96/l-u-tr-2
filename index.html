@@ -2,58 +2,159 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>Cảm ơn bạn đã đăng ký</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Giao dịch thành công!</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700&display=swap');
+
+    /* --- Biến màu để dễ dàng tùy chỉnh --- */
+    :root {
+      --primary-blue: #007bff;
+      --primary-blue-dark: #0056b3;
+      --light-blue-bg: #f0f7ff;
+      --white: #ffffff;
+      --text-dark: #2a3a4e;
+      --text-light: #6c757d;
+      --success-green: #28a745;
+    }
+
+    /* --- Thiết lập chung --- */
     body {
       font-family: 'Be Vietnam Pro', sans-serif;
-      background: #fdfbfb;
-      color: #333;
+      background-color: var(--light-blue-bg);
+      color: var(--text-dark);
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
       margin: 0;
+      padding: 20px;
+      box-sizing: border-box;
     }
-    .thankyou {
+
+    /* --- Khung cảm ơn --- */
+    .thankyou-container {
       text-align: center;
-      background: #fff;
-      padding: 40px 60px;
-      border-radius: 16px;
-      box-shadow: 0 10px 30px rgba(0,0,0,.1);
-      max-width: 600px;
+      background: var(--white);
+      padding: 40px 50px;
+      border-radius: 24px;
+      box-shadow: 0 15px 40px rgba(0, 123, 255, 0.1);
+      max-width: 500px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      animation: fadeIn 0.8s ease-out forwards;
+      opacity: 0;
     }
-    .thankyou h1 {
-      color: #e11d48;
-      margin-bottom: 20px;
-      font-size: 2em;
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
     }
-    .thankyou p {
-      font-size: 1.1em;
-      margin-bottom: 30px;
+
+    /* --- Icon thành công --- */
+    .success-icon {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 25px;
+      animation: popIn 0.5s ease-out 0.5s both;
+    }
+    
+    .success-icon .circle {
+      stroke-dasharray: 264;
+      stroke-dashoffset: 264;
+      animation: drawCircle 0.8s ease-out 0.6s forwards;
+    }
+    
+    .success-icon .checkmark {
+      stroke-dasharray: 70;
+      stroke-dashoffset: 70;
+      animation: drawCheckmark 0.4s ease-out 1.4s forwards;
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.7); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    @keyframes drawCircle {
+      to { stroke-dashoffset: 0; }
+    }
+    @keyframes drawCheckmark {
+      to { stroke-dashoffset: 0; }
+    }
+
+    /* --- Nội dung văn bản --- */
+    h1 {
+      color: var(--primary-blue);
+      font-size: 2.2em; /* 36px */
+      font-weight: 700;
+      margin: 0 0 15px;
+    }
+
+    p {
+      font-size: 1.1em; /* 18px */
+      color: var(--text-light);
       line-height: 1.6;
+      margin: 0 0 35px;
     }
-    .thankyou a {
-      display: inline-block;
-      padding: 12px 24px;
-      background: #e11d48;
-      color: #fff;
-      border-radius: 8px;
+
+    /* --- Nút bấm quay về trang chủ --- */
+    .btn-home {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 28px;
+      background-color: var(--primary-blue);
+      color: var(--white);
+      border-radius: 12px;
       text-decoration: none;
-      font-weight: bold;
-      transition: background .3s;
+      font-weight: 500;
+      font-size: 1em; /* 16px */
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(0, 123, 255, 0.2);
     }
-    .thankyou a:hover {
-      background: #be123c;
+
+    .btn-home:hover {
+      background-color: var(--primary-blue-dark);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0, 86, 179, 0.3);
+    }
+    
+    .btn-home svg {
+      width: 20px;
+      height: 20px;
     }
   </style>
 </head>
 <body>
-  <div class="thankyou">
-    <h1>🎉 Cảm ơn bạn!</h1>
-    <p>Đơn hàng của bạn đã được gửi thành công.<br>
-    Vui lòng kiểm tra email để nhận khóa học.</p>
-    <a href="https://www.khoahoc24h.online">⬅ Quay lại Trang Chủ</a>
+  <div class="thankyou-container">
+    
+    <svg class="success-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+      <circle class="circle" cx="26" cy="26" r="25" fill="none" stroke="#007bff" stroke-width="2"/>
+      <path class="checkmark" fill="none" stroke="#007bff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" d="M14 27l5 5 16-16"/>
+    </svg>
+
+    <h1>Giao dịch thành công!</h1>
+    
+    <p>
+      Chúng tôi đã nhận được đơn hàng của bạn. <br>
+      Vui lòng kiểm tra email để nhận thông tin chi tiết về khóa học.
+    </p>
+    
+    <a href="https://www.khoahoc24h.online" class="btn-home">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
+        <path fill-rule="evenodd" d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5z"/>
+      </svg>
+      Quay lại Trang Chủ
+    </a>
+    
   </div>
 </body>
 </html>
